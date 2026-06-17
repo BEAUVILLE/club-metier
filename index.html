@@ -262,6 +262,26 @@
       background:#000;
     }
 
+
+    .video-fallback{
+      margin:10px 4px 2px;
+      text-align:center;
+      font-size:.9rem;
+      font-weight:900;
+    }
+
+    .video-fallback a{
+      color:#04180e;
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      text-decoration:none;
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      min-height:40px;
+      padding:10px 14px;
+      border-radius:999px;
+    }
+
     .modal-close{
       position:absolute;
       top:-14px;
@@ -359,11 +379,17 @@
       <button class="modal-close" type="button" onclick="closeDiapo()" aria-label="Fermer">✕</button>
       <video
         id="diapoVideo"
-       src="digiylyfe-diaporama-club-metiers.mp4"
         controls
         playsinline
+        preload="metadata"
         loop
-      ></video>
+      >
+        <source src="./digiylyfe-diaporama-club-metiers-light.mp4" type="video/mp4">
+        Ton navigateur ne peut pas lire cette vidéo.
+      </video>
+      <p class="video-fallback">
+        <a href="./digiylyfe-diaporama-club-metiers-light.mp4" download>📥 Télécharger la vidéo</a>
+      </p>
     </div>
   </div>
 
@@ -438,6 +464,7 @@
         const video = document.getElementById("diapoVideo");
         if(!overlay || !video) return;
         overlay.classList.add("show");
+        video.load();
         video.currentTime = 0;
         video.play().catch(function(){});
       };
@@ -470,6 +497,10 @@
 
 </body>
 </html>
+
+
+
+
 
 
 
