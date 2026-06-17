@@ -158,7 +158,6 @@
       font-weight:800;
     }
 
-
     .poster-link{
       display:block;
       color:inherit;
@@ -229,76 +228,6 @@
       font-size:.88rem;
     }
 
-    .modal-overlay{
-      position:fixed;
-      inset:0;
-      z-index:60;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      background:rgba(2,8,5,.82);
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-overlay.show{
-      display:flex;
-    }
-
-    .modal-box{
-      position:relative;
-      width:min(100%, 420px);
-      border-radius:26px;
-      padding:8px;
-      background:linear-gradient(145deg, rgba(243,212,122,.85), rgba(216,173,61,.2), rgba(255,255,255,.12));
-      box-shadow:0 26px 70px rgba(0,0,0,.55);
-    }
-
-    .modal-box video{
-      display:block;
-      width:100%;
-      height:auto;
-      border-radius:20px;
-      background:#000;
-    }
-
-
-    .video-fallback{
-      margin:10px 4px 2px;
-      text-align:center;
-      font-size:.9rem;
-      font-weight:900;
-    }
-
-    .video-fallback a{
-      color:#04180e;
-      background:linear-gradient(135deg, var(--gold2), var(--gold));
-      text-decoration:none;
-      display:inline-flex;
-      justify-content:center;
-      align-items:center;
-      min-height:40px;
-      padding:10px 14px;
-      border-radius:999px;
-    }
-
-    .modal-close{
-      position:absolute;
-      top:-14px;
-      right:-14px;
-      width:36px;
-      height:36px;
-      border-radius:50%;
-      border:1px solid rgba(216,173,61,.6);
-      background:linear-gradient(135deg, var(--gold2), var(--gold));
-      color:#04180e;
-      font-weight:900;
-      font-size:1rem;
-      line-height:1;
-      cursor:pointer;
-      box-shadow:0 10px 24px rgba(0,0,0,.4);
-    }
-
     @media (max-width: 820px){
       body{padding:12px}
       .hero{
@@ -349,7 +278,6 @@
           <a class="btn secondary" href="https://digiylyfe.com/" target="_blank" rel="noopener">Ouvrir le site</a>
           <button class="btn secondary" type="button" onclick="shareDigiy()">Partager</button>
           <button class="btn secondary" type="button" onclick="copyDigiyLink()">Copier le lien</button>
-          <button class="btn secondary" type="button" onclick="openDiapo()">🎬 Voir le diaporama</button>
           <a class="btn secondary" id="waShare" href="#" target="_blank" rel="noopener">WhatsApp</a>
           <a class="btn secondary" id="smsShare" href="#">SMS</a>
         </div>
@@ -373,26 +301,7 @@
       DIGIYLYFE — Zéro commission • 100% indépendance • La main dans la main
     </footer>
   </main>
-
-  <div class="modal-overlay" id="diapoOverlay" role="dialog" aria-modal="true" aria-label="Diaporama DIGIYLYFE">
-    <div class="modal-box">
-      <button class="modal-close" type="button" onclick="closeDiapo()" aria-label="Fermer">✕</button>
-     <video
-  id="diapoVideo"
-  src="./diaporama-light.mp4"
-  controls
-  playsinline
-  preload="metadata"
-  loop
-></video>
-
-<p class="video-fallback">
-  <a href="./diaporama-light.mp4" download>📥 Télécharger la vidéo</a>
-</p>
-    </div>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">Lien copié ✅</div>
+<div class="toast" id="toast" role="status" aria-live="polite">Lien copié ✅</div>
 
   <script>
     (function(){
@@ -458,35 +367,6 @@
       if(wa) wa.href = "https://wa.me/?text=" + encodeURIComponent(shareText);
       if(sms) sms.href = "sms:?&body=" + encodeURIComponent(shareText);
 
-      window.openDiapo = function(){
-        const overlay = document.getElementById("diapoOverlay");
-        const video = document.getElementById("diapoVideo");
-        if(!overlay || !video) return;
-        overlay.classList.add("show");
-        video.load();
-        video.currentTime = 0;
-        video.play().catch(function(){});
-      };
-
-      window.closeDiapo = function(){
-        const overlay = document.getElementById("diapoOverlay");
-        const video = document.getElementById("diapoVideo");
-        if(!overlay || !video) return;
-        overlay.classList.remove("show");
-        video.pause();
-      };
-
-      document.addEventListener("keydown", function(e){
-        if(e.key === "Escape") window.closeDiapo();
-      });
-
-      const diapoOverlayEl = document.getElementById("diapoOverlay");
-      if(diapoOverlayEl){
-        diapoOverlayEl.addEventListener("click", function(e){
-          if(e.target === diapoOverlayEl) window.closeDiapo();
-        });
-      }
-
       /* Clic digital sur l'image/QR : retour maison DIGIYLYFE */
       document.querySelectorAll(".poster-link").forEach(function(link){
         link.href = SITE_URL;
@@ -496,6 +376,7 @@
 
 </body>
 </html>
+
 
 
 
