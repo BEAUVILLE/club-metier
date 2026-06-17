@@ -121,20 +121,6 @@
     background:rgba(255,255,255,.06);
   }
 
-  .note{
-    width:min(100%, 420px);
-    margin:14px 0 0;
-    padding:12px 14px;
-    border-radius:18px;
-    border:1px solid rgba(216,173,61,.24);
-    background:rgba(255,255,255,.05);
-    color:rgba(255,248,232,.75);
-    font-size:.9rem;
-    line-height:1.35;
-    font-weight:700;
-    text-align:center;
-  }
-
   .toast{
     position:fixed;
     left:50%;
@@ -172,42 +158,25 @@
 
   <div class="brand">
     <p class="kicker">Saly • Mbour • Petite Côte • Sénégal</p>
-    <h1>DIGIYLYFE — Club des <span>métiers</span> du terrain</h1>
+    <h1>Club des <span>métiers</span> du terrain</h1>
   </div>
 
   <div class="video-wrap">
     <video
       id="diapoVideo"
+      src="digiylyfe-diaporama-club-metiers.mp4"
       controls
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
-    >
-      <source src="./digiylyfe-diaporama-club-metiers-light.mp4" type="video/mp4">
-      Ton navigateur ne peut pas lire cette vidéo.
-    </video>
+    ></video>
   </div>
 
   <div class="actions">
-    <a class="btn primary" href="https://digiylyfe.com/" target="_blank" rel="noopener">
-      Visiter digiylyfe.com
-    </a>
-
-    <button class="btn secondary" type="button" onclick="shareDiapo()">
-      Partager
-    </button>
-
-    <button class="btn secondary" type="button" onclick="copyDiapoLink()">
-      Copier le lien
-    </button>
+    <a class="btn primary" href="https://digiylyfe.com/" target="_blank" rel="noopener">Visiter digiylyfe.com</a>
+    <button class="btn secondary" type="button" onclick="shareDiapo()">Partager</button>
   </div>
-
-  <p class="note">
-    Chauffeur · Logement · Réservation · Artisans · Boutiques · Emploi<br>
-    Scanne. Clique. Partage. Le terrain garde la main.
-  </p>
 
   <footer>
     DIGIYLYFE — Zéro commission • 100% indépendance • La main dans la main
@@ -234,42 +203,20 @@
         }, 1800);
       }
 
-      window.copyDiapoLink = async function(){
-        try{
-          if(navigator.clipboard && window.isSecureContext){
-            await navigator.clipboard.writeText(shareUrl);
-            toast("Lien diaporama copié ✅");
-          }else{
-            const area = document.createElement("textarea");
-            area.value = shareUrl;
-            area.setAttribute("readonly", "");
-            area.style.position = "fixed";
-            area.style.left = "-9999px";
-            document.body.appendChild(area);
-            area.select();
-            document.execCommand("copy");
-            document.body.removeChild(area);
-            toast("Lien diaporama copié ✅");
-          }
-        }catch(e){
-          toast("Copie impossible");
-        }
-      };
-
       window.shareDiapo = async function(){
         try{
           if(navigator.share){
-            await navigator.share({
-              title: shareTitle,
-              text: shareText,
-              url: shareUrl
-            });
+            await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
             return;
           }
-          await window.copyDiapoLink();
+          if(navigator.clipboard && window.isSecureContext){
+            await navigator.clipboard.writeText(shareUrl);
+            toast("Lien copié ✅");
+          }else{
+            toast("Copie manuelle : " + shareUrl);
+          }
         }catch(e){
           if(e && e.name === "AbortError") return;
-          await window.copyDiapoLink();
         }
       };
     })();
