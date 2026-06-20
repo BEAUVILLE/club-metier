@@ -13,6 +13,7 @@
   <meta property="og:type" content="website" />
 
   <meta name="theme-color" content="#021f13" />
+  <meta name="digiy-bilingual" content="club-metiers-fr-en-retour-fr-natif-20260620" />
 
   <style>
     :root{
@@ -221,6 +222,34 @@
       transform:translate(-50%,0);
     }
 
+
+    .digiy-lang-switch{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:0 0 16px;
+    }
+
+    .digiy-lang-switch button{
+      min-height:38px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(243,212,122,.42);
+      background:rgba(255,255,255,.06);
+      color:var(--white);
+      font:inherit;
+      font-size:.86rem;
+      font-weight:1000;
+      cursor:pointer;
+    }
+
+    .digiy-lang-switch button.active{
+      color:#04180e;
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      box-shadow:0 10px 24px rgba(216,173,61,.14);
+    }
+
     footer{
       margin-top:22px;
       text-align:center;
@@ -265,6 +294,10 @@
       </a>
 
       <div class="card">
+        <div class="digiy-lang-switch" aria-label="Langue">
+          <button type="button" data-digiy-lang="fr" class="active">🇫🇷 FR</button>
+          <button type="button" data-digiy-lang="en">🇬🇧 EN</button>
+        </div>
         <p class="kicker">Saly • Mbour • Petite Côte • Sénégal</p>
         <h1>Club des <span>métiers</span><br>du terrain</h1>
 
@@ -374,8 +407,197 @@
     })();
   </script>
 
+
+  <script>
+    (function(){
+      "use strict";
+
+      const EN = new URLSearchParams(window.location.search).get("lang") === "en";
+
+      const TEXT = {
+        title:"DIGIYLYFE — Field Trades Club",
+        description:"DIGIYLYFE — Field Trades Club. DIGIY gives you digital arms. Saly, Mbour, Petite Côte, Senegal.",
+        ogTitle:"DIGIYLYFE — Field Trades Club",
+        ogDescription:"DIGIY gives you digital arms. Scan, search, work, book, grow.",
+        shareTitle:"DIGIYLYFE — Field Trades Club",
+        shareIntro:"DIGIYLYFE — Field Trades Club.",
+        shareText:"DIGIYLYFE — Field Trades Club. Driver, housing, bookings, artisans, shops, jobs. ",
+        copied:"Field Trades Club link copied ✅",
+        copyFail:"Copy unavailable · club-metiers.digiylyfe.com",
+        toastDefault:"Link copied ✅"
+      };
+
+      function setText(sel, value){
+        const el = document.querySelector(sel);
+        if(el) el.textContent = value;
+      }
+
+      function setAttr(sel, attr, value){
+        const el = document.querySelector(sel);
+        if(el) el.setAttribute(attr, value);
+      }
+
+      function meta(name, value){
+        let el = document.querySelector('meta[name="' + name + '"]');
+        if(el) el.setAttribute("content", value);
+      }
+
+      function prop(name, value){
+        let el = document.querySelector('meta[property="' + name + '"]');
+        if(el) el.setAttribute("content", value);
+      }
+
+      function basePath(){
+        return window.location.pathname + (window.location.hash || "");
+      }
+
+      function goFr(){
+        try{
+          sessionStorage.removeItem("digiy_club_lang");
+          localStorage.removeItem("digiy_club_lang");
+        }catch(_){}
+        window.location.href = window.location.pathname + (window.location.hash || "");
+      }
+
+      function goEn(){
+        try{
+          sessionStorage.setItem("digiy_club_lang", "en");
+        }catch(_){}
+        window.location.href = window.location.pathname + "?lang=en" + (window.location.hash || "");
+      }
+
+      function wireLangButtons(){
+        document.querySelectorAll("[data-digiy-lang]").forEach(function(btn){
+          const lang = btn.getAttribute("data-digiy-lang");
+          btn.classList.toggle("active", EN ? lang === "en" : lang === "fr");
+          btn.setAttribute("aria-pressed", (EN ? lang === "en" : lang === "fr") ? "true" : "false");
+          btn.addEventListener("click", function(){
+            if(lang === "fr") goFr();
+            else goEn();
+          });
+        });
+      }
+
+      function localShareUrl(){
+        const CLUB_URL = "https://club-metiers.digiylyfe.com/";
+        return window.location.protocol === "file:" ? CLUB_URL : window.location.origin + window.location.pathname + (EN ? "?lang=en" : "");
+      }
+
+      function updateShareLinks(){
+        const shareUrl = localShareUrl();
+        const shareText = (EN ? TEXT.shareText : "DIGIYLYFE — Club des Métiers du Terrain. Chauffeur, logement, réservation, artisans, boutiques, emploi. ") + shareUrl;
+        const wa = document.getElementById("waShare");
+        const sms = document.getElementById("smsShare");
+        if(wa) wa.href = "https://wa.me/?text=" + encodeURIComponent(shareText);
+        if(sms) sms.href = "sms:?&body=" + encodeURIComponent(shareText);
+      }
+
+      function applyEnglish(){
+        document.documentElement.lang = "en";
+        document.title = TEXT.title;
+        meta("description", TEXT.description);
+        prop("og:title", TEXT.ogTitle);
+        prop("og:description", TEXT.ogDescription);
+
+        setAttr(".poster-link", "aria-label", "Open DIGIYLYFE by tapping the QR or the poster");
+        setAttr(".poster", "alt", "DIGIYLYFE — Field Trades Club, DIGIY gives you digital arms");
+
+        setText(".qr-hint", "📲 Scan or tap the QR");
+        setText(".kicker", "Saly • Mbour • Petite Côte • Senegal");
+
+        const h1 = document.querySelector("h1");
+        if(h1) h1.innerHTML = 'Field <span>trades</span><br>club';
+
+        setText(".tagline", "DIGIY gives you digital arms: driver, housing, bookings, artisans, shops, jobs.");
+
+        const actions = document.querySelectorAll(".actions .btn");
+        if(actions[0]) actions[0].textContent = "Enter DIGIYLYFE";
+        if(actions[1]) actions[1].textContent = "Open the site";
+        if(actions[2]) actions[2].textContent = "Share";
+        if(actions[3]) actions[3].textContent = "Copy link";
+        if(actions[4]) actions[4].textContent = "WhatsApp";
+        if(actions[5]) actions[5].textContent = "SMS";
+
+        setText(".share-note", "The visual is clickable online. The QR remains scannable on paper.");
+
+        const chips = document.querySelectorAll(".chip");
+        const chipTexts = ["🚗 Driver","🏠 Housing","📅 Booking","🏗️ Artisans","🛍️ Shops","💼 Jobs"];
+        chips.forEach(function(chip, i){
+          if(chipTexts[i]) chip.textContent = chipTexts[i];
+        });
+
+        const footer = document.querySelector("footer");
+        if(footer) footer.textContent = "DIGIYLYFE — Zero commission • 100% independence • Hand in hand";
+
+        const toast = document.getElementById("toast");
+        if(toast) toast.textContent = TEXT.toastDefault;
+
+        window.copyDigiyLink = async function(){
+          const shareUrl = localShareUrl();
+          try{
+            if(navigator.clipboard && window.isSecureContext){
+              await navigator.clipboard.writeText(shareUrl);
+            }else{
+              const area = document.createElement("textarea");
+              area.value = shareUrl;
+              area.setAttribute("readonly", "");
+              area.style.position = "fixed";
+              area.style.left = "-9999px";
+              document.body.appendChild(area);
+              area.select();
+              document.execCommand("copy");
+              document.body.removeChild(area);
+            }
+            const box = document.getElementById("toast");
+            if(box){
+              box.textContent = TEXT.copied;
+              box.classList.add("show");
+              clearTimeout(window.__digiyToast);
+              window.__digiyToast = setTimeout(function(){ box.classList.remove("show"); }, 1800);
+            }
+          }catch(e){
+            const box = document.getElementById("toast");
+            if(box){
+              box.textContent = TEXT.copyFail;
+              box.classList.add("show");
+              clearTimeout(window.__digiyToast);
+              window.__digiyToast = setTimeout(function(){ box.classList.remove("show"); }, 1800);
+            }
+          }
+        };
+
+        window.shareDigiy = async function(){
+          try{
+            if(navigator.share){
+              await navigator.share({
+                title: TEXT.shareTitle,
+                text: TEXT.shareIntro,
+                url: localShareUrl()
+              });
+              return;
+            }
+            await window.copyDigiyLink();
+          }catch(e){
+            if(e && e.name === "AbortError") return;
+            await window.copyDigiyLink();
+          }
+        };
+      }
+
+      wireLangButtons();
+
+      if(EN){
+        applyEnglish();
+      }
+
+      updateShareLinks();
+    })();
+  </script>
+
 </body>
 </html>
+
+
 
 
 
